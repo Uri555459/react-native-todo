@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, View } from 'react-native'
 import { Navbar } from './src/components/Navbar/Navbar'
-import { AddTodo } from './src/components/AddTodo/AddTodo'
-import { TodoItem } from './src/components/TodoItem/TodoItem'
+import { MainScreen } from './src/screens/MainScreen'
+import { TodoScreen } from './src/screens/TodoScreen'
 
 export default function App() {
+  const [todoId, setTodoId] = useState(null)
   const [todos, setTodos] = useState([])
 
   const addTodo = (title) => {
@@ -19,24 +20,73 @@ export default function App() {
   }
 
   const removeTodo = (id) => {
-    setTodos((prev) => prev.filter((todo) => todo.id != id))
+    const { title } = todos.find((todo) => todo.id === id)
+    Alert.alert(
+      'Удаление элемента',
+      `Вы уверены, что хотите удалить "${title}"?`,
+      [
+        {
+          text: 'Отмена',
+          style: 'cancel',
+        },
+        {
+          text: 'Удалить',
+          onPress: () => {
+            setTodoId(null)
+            setTodos((prev) => prev.filter((todo) => todo.id != id))
+          },
+        },
+      ],
+      { cancelable: false }
+    )
+  }
+
+  const openTodo = (id) => {
+    setTodoId(id)
+  }
+
+  const goBack = () => {
+    setTodoId(null)
+  }
+
+  const updateTodo = (id, title) => {
+    setTodos((old) =>
+      old.map((todo) => {
+        if (todo.id === id) {
+          todo.title = title
+        }
+
+        return todo
+      })
+    )
+  }
+
+  let content = (
+    <MainScreen
+      addTodo={addTodo}
+      removeTodo={removeTodo}
+      todos={todos}
+      openTodo={openTodo}
+    />
+  )
+
+  if (todoId) {
+    const todo = todos.find((todo) => todo.id === todoId)
+    content = (
+      <TodoScreen
+        todo={todo}
+        goBack={goBack}
+        removeTodo={removeTodo}
+        onSave={updateTodo}
+      />
+    )
   }
 
   return (
     <View>
       <StatusBar style='auto' />
       <Navbar title='Todo App' />
-      <View style={styles.container}>
-        <AddTodo addTodo={addTodo} />
-
-        <FlatList
-          data={todos}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TodoItem removeTodo={removeTodo} todo={item} />
-          )}
-        />
-      </View>
+      <View style={styles.container}>{content}</View>
     </View>
   )
 }
