@@ -1,11 +1,12 @@
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native'
+import { View, StyleSheet, SafeAreaView } from 'react-native'
+import { AppTextBold } from '../ui/AppTextBold'
 import { THEME } from '../../theme'
 
 export const Navbar = ({ title }) => {
   return (
     <SafeAreaView>
       <View style={styles.navbar}>
-        <Text style={styles.text}>{title}</Text>
+        <AppTextBold style={styles.text}>{title}</AppTextBold>
       </View>
     </SafeAreaView>
   )

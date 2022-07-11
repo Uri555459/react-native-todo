@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { StatusBar } from 'expo-status-bar'
 import { Alert, StyleSheet, View } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import { useFonts } from 'expo-font'
+
 import { Navbar } from './src/components/Navbar/Navbar'
 import { MainScreen } from './src/screens/MainScreen'
 import { TodoScreen } from './src/screens/TodoScreen'
@@ -8,6 +10,14 @@ import { TodoScreen } from './src/screens/TodoScreen'
 export default function App() {
   const [todoId, setTodoId] = useState(null)
   const [todos, setTodos] = useState([])
+  const [loaded] = useFonts({
+    'roboto-bold': require('./assets/fonts/Roboto-Bold.ttf'),
+    'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf'),
+  })
+
+  if (!loaded) {
+    return null
+  }
 
   const addTodo = (title) => {
     setTodos((prev) => [
