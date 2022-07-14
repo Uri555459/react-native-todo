@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native'
+import { View, TextInput, StyleSheet, Alert, Keyboard } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 
 import { THEME } from '../../theme'
@@ -11,6 +11,7 @@ export const AddTodo = ({ addTodo }) => {
     if (value.trim()) {
       addTodo(value.trim())
       setValue('')
+      Keyboard.dismiss()
     } else {
       Alert.alert('Введите текст задачи')
       setValue('')
